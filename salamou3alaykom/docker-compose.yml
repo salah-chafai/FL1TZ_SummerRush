@@ -4,3 +4,9 @@ services:
     ports:
       - "5000:5000"
     restart: always
+    ulimits:
+      nproc: 64
+      nofile:
+        soft: 1024
+        hard: 1024
+
