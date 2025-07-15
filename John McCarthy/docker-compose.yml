@@ -1,9 +1,16 @@
 services:
-  salamou3alaykom:
+  jhon_mc_carthy:
     build: .
     ports:
       - "5000:5000"
     restart: always
+
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+
     ulimits:
       nproc: 64
       nofile:
