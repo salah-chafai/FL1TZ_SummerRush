@@ -1,0 +1,14 @@
+services:
+  challenge:
+    build:
+      context: .
+    image: debug_image
+    container_name: debug_container
+    ports:
+      - "5001:5001"
+      - "9090:9090"
+    stdin_open: true
+    tty: true
+    cap_add:
+      - SYS_PTRACE
+
