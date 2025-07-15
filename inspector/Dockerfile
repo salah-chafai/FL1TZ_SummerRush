@@ -1,21 +1,15 @@
 FROM ubuntu:22.04
+RUN apt-get update && apt-get install -y socat
 
-RUN apt-get update && apt-get install -y gdb gdbserver && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN groupadd -r ctf && useradd -r -g ctf ctf
 
-RUN groupadd -r ctf && useradd -r -g ctf -d /home/ctf -s /bin/bash ctf
-
-COPY . /home/ctf/
-
-RUN set -eux; \
-    cd /home/ctf; \
-    random_suffix=$(head /dev/urandom | tr -cd 'a-f0-9' | head -c 16); \
-    mv flag "flag${random_suffix}"; \
-    chmod 440 "flag${random_suffix}"; \
-    chown -R ctf:ctf /home/ctf
+ADD --chown=ctf ./ /home/ctf/
+RUN mv /home/ctf/flag "/home/ctf/flag$(cat /dev/urandom | tr -cd 'a-f0-9' | head -c 16)" && \
+    chmod 440 /home/ctf/flag*
+RUN chmod 774 /home/ctf/main
 
 USER ctf
-
+EXPOSE 5001
 WORKDIR /home/ctf
 
-CMD ["gdbserver", "localhost:5001", "./main"]
+CMD socat TCP-LISTEN:5001,reuseaddr,fork EXEC:'timeout 40 ./main'

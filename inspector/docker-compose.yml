@@ -1,14 +1,19 @@
 services:
-  challenge:
-    build:
-      context: .
-    image: debug_image
-    container_name: debug_container
+  inspector:
+    build: .
     ports:
       - "5001:5001"
-      - "9090:9090"
-    stdin_open: true
-    tty: true
-    cap_add:
-      - SYS_PTRACE
+    restart: always
+
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+
+    ulimits:
+      nproc: 64
+      nofile:
+        soft: 1024
+        hard: 1024
 
